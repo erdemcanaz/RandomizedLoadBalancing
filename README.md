@@ -89,15 +89,16 @@ This simple algorithm provides remarkably good load balancing with minimal overh
 
 ### Key Results
 
-> **Note on Results Variability**: The specific expected load values (e.g., ~50%, ~33%, ~25%) can vary depending on the load distribution across servers. For simplicity, the results presented here are based on the `wiggly_server_load.py` script's random smooth distribution.
+> **Note on Results Variability**: The specific expected load values can vary depending on the load distribution characteristics across servers. For simplicity, the results presented here are based on the `wiggly_server_load.py` script's random smooth distribution.
 >
 > In real-life scenarios with well-functioning load balancing systems, servers tend to have **nearly identical loads** because:
 >
 > - Server handling capacity is typically very large relative to individual requests
 > - A newly added request does not significantly change the server's current load
 > - The algorithm works effectively over time to keep loads balanced across all servers
+> - If the server load mean is lets say, 0.70 with std of 0.01, one can simply assume and map [0.64,0.76] to [0,1].
 >
-> This near-uniform load state makes the system more predictable and the benefits of randomized load balancing even more pronounced.
+> This near-uniform load state makes the system more predictable and the benefits of randomized load balancing even more pronounced. Please note that In real systems, server load is rarely uniformly spread over [0,1]; instead, it is typically concentrated around some operating point (e.g., mean 0.70 with a small standard deviation like 0.01). In such cases, we can focus on a high-probability interval (e.g., 0.64 , 0.76 0.64,0.76) and linearly map it to 0 , 1 0,1, so the analysis is done in a normalized space while still reflecting the realistic, non-uniform load distribution.
 
 - **k = 1 (Random selection)**: Picking one server randomly and assigning the request results in an **expected load of ~50%**
 
