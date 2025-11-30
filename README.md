@@ -4,12 +4,15 @@
 
 In distributed systems with thousands or millions of servers, how can we efficiently assign incoming requests to servers while achieving near-optimal load balancing?
 
+In some real-world scenarios, **each new request is tiny compared to the total capacity** of the system (e.g., uploading a PDF of a few MBs to a disk measured in TBs). This means that  **a single assignment barely changes the global load distribution** , so treating the system in terms of **expected values** is both realistic and a good proxy for “ground truth.”
+
 **The Challenge**: Traditional approaches require either:
+
 - **Global state tracking**: Maintaining and querying the load of all servers (expensive and slow for large systems)
 - **Centralized coordination**: A single coordinator that becomes a bottleneck
 - **Complex protocols**: Distributed consensus algorithms that add significant overhead
 
-**The Surprising Solution**: By randomly sampling just a **small constant number (k)** of servers and choosing the least loaded among them, we can approximate optimal load balancing with minimal overhead.
+**The Surprising Solution**: By randomly sampling just a **small constant number (k)** of servers and choosing the least loaded among them, we can approximate optimal load balancing with minimal overhead while the expected behavior of the system accurately reflects what happens in practice, since each request only nudges the overall state.
 
 ### Why This Is Remarkable
 
@@ -69,14 +72,6 @@ In these simulations, each server's load is sampled from a probability distribut
 The results are averaged over all T trials to compute the expected load.
 
 ---
-
-## The Problem
-
-In distributed systems, when new incoming requests arrive, they need to be assigned to servers. The goal is to put each new request on the server with the least load to optimize overall system usage and distribute the workload evenly. This is crucial because:
-
-- **Avoiding bottlenecks**: If we keep filling only one server while keeping others empty, the heavily loaded server becomes a bottleneck
-- **Resource utilization**: Other servers remain idle, wasting computational resources
-- **System efficiency**: Work will be fetched and processed later, so balanced distribution ensures smooth operation
 
 ## The Power of Random Sampling
 
