@@ -1,5 +1,10 @@
 # Randomized Load Balancing
 
+## References
+
+* [How AWS S3 Hit 1PB/s Using Hard Drives… This Is WILD!](https://youtu.be/J1vEUTe4gi0)
+* [Load Balancing: The Intuition Behind the Power of Two Random Choices](https://medium.com/the-intuition-project/load-balancing-the-intuition-behind-the-power-of-two-random-choices-6de2e139ac2f)
+
 ## Problem Statement
 
 In distributed systems with thousands or millions of servers, how can we efficiently assign incoming requests to servers while achieving near-optimal load balancing?
@@ -143,13 +148,35 @@ Below are experimental results showing how the expected chosen load decreases as
 
 ![1764530278632](image/README/1764530278632.png)
 
-![1764530312773](image/README/1764530312773.png)
+![1764530312773](https://file+.vscode-resource.vscode-cdn.net/c%3A/Users/Levovo20x/Documents/GitHub/RandomizedLoadBalancing/image/README/1764530312773.png)
+
+---
+
+### Balls-in-Bins Problem
+
+The classic **balls-in-bins problem** provides another perspective on randomized load balancing. When placing a large number of balls into bins:
+
+**Random Placement (k=1)**: Each ball is placed into a randomly selected bin, resulting in a wider distribution with higher maximum loads.
+
+**Best-of-Two (k=2)**: Each ball is placed by selecting two random bins and choosing the one with fewer balls. This dramatically reduces the maximum load and creates a tighter distribution.
+
+**Best-of-k (k≥3)**: Further improvements continue but with diminishing returns, consistent with the load balancing results.
+
+The graph below shows the probability distribution of ball counts per bin for different strategies (k=1, 2, 3, 5). The distribution becomes progressively more concentrated around the expected average (100 balls per bin) as k increases, demonstrating the power of random choices in achieving balanced distribution.
+
+![1764532716159](image/README/1764532716159.png)
+
+![1764532764408](image/README/1764532764408.png)
+
+![1764532791174](image/README/1764532791174.png)
+
+![1764532863162](image/README/1764532863162.png)
 
 ---
 
 ## Scripts Overview
 
-This repository contains three simulation scripts that demonstrate randomized load balancing under different server load distributions:
+This repository contains four simulation scripts that demonstrate randomized load balancing under different scenarios:
 
 ### 1. `uniform_load_server.py` - Uniform Load Distribution
 
@@ -197,6 +224,29 @@ Generates a random, smooth, continuous PDF over [0,1] to represent unpredictable
 
 ---
 
+### 4. `balls_in_bins.py` - Classic Balls-in-Bins Problem
+
+Simulates the classic balls-in-bins problem, which provides an alternative perspective on randomized load balancing. Instead of selecting the server with minimum load, this shows how maximum loads develop when distributing a fixed number of balls across bins.
+
+**Changeable Parameters:**
+
+- `num_bins`: Number of bins in the system (default: 100)
+- `num_balls`: Number of balls to distribute (default: 10,000)
+- `num_trials`: Number of Monte Carlo simulation trials (default: 25)
+- `max_k`: Maximum number of bins to sample (default: 5)
+
+**Strategies Implemented:**
+
+- **Random Placement (k=1)**: Each ball placed in a randomly selected bin
+- **Best-of-Two (k=2)**: Pick 2 bins, place ball in the one with fewer balls
+- **Best-of-k (k≥3)**: Pick k bins, place ball in the one with fewest balls
+
+**Visualization**: Probability distribution showing ball counts per bin for k=1, 2, 3, and 5, centered around the expected average (num_balls/num_bins).
+
+**Use Case:** Understanding how the "power of two choices" reduces maximum load and creates more balanced distributions. This provides theoretical foundation for load balancing strategies.
+
+---
+
 ## Running the Simulations
 
 Each script can be run independently:
@@ -205,9 +255,10 @@ Each script can be run independently:
 python uniform_load_server.py
 python polynomial_server_load.py
 python wiggly_server_load.py
+python balls_in_bins.py
 ```
 
-All scripts generate plots showing the relationship between k (number of sampled servers) and the expected chosen load, demonstrating the effectiveness of randomized load balancing.
+All scripts generate plots showing the relationship between k (number of sampled servers/bins) and the load distribution, demonstrating the effectiveness of randomized load balancing.
 
 ## Requirements
 
